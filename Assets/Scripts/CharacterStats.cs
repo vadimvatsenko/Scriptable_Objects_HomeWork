@@ -9,4 +9,12 @@ public class CharacterStats : ScriptableObject
     public int speed;
     public int attackDamage;
     public int coins;
+
+    public void CopyStats(CharacterStats newStats)
+    {
+        health = newStats.health;
+        speed = newStats.speed;
+        attackDamage = newStats.attackDamage;
+        coins = newStats.coins;
+    }
 }

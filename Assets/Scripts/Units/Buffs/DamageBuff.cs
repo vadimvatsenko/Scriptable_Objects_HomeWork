@@ -10,11 +10,9 @@ public class DamageBuff : IBuff
         _damageBonus = damageBonus;
     }
 
-    public CharacterStats ApplyBuff(CharacterStats stats)
+    public void ApplyBuff(CharacterStats stats)
     {
         CharacterStats newStats = stats;
         newStats.attackDamage = _damageBonus;
-
-        return newStats;
     }
 }

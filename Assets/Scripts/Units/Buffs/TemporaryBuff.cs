@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class TemporaryBuff : IBuff
@@ -9,26 +10,23 @@ public class TemporaryBuff : IBuff
     private float _lifetime;
     private Timer _timer;
 
-    public TemporaryBuff(IBuffable owner, IBuff buff, float lifetime)
+    public TemporaryBuff(IBuffable owner, IBuff buff, int lifetime)
     {
         _owner = owner;
         _coreBuff = buff;
         _lifetime = lifetime;
-
+        _timer = new Timer();
     }
 
-    public CharacterStats ApplyBuff(CharacterStats stats)
+    public void ApplyBuff(CharacterStats stats)
     {
-        CharacterStats newStats = _coreBuff.ApplyBuff(stats);
-        _timer.StartTimer(_lifetime, () =>
+        _coreBuff.ApplyBuff(stats);
+       
+        _ = _timer.RunTimer((int)_lifetime, () =>
         {
             _owner.RemoveBuff(this);
         });
-
-        return newStats;
     }
-
-
 }
 
 

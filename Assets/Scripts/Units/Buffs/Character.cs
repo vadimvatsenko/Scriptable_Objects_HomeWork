@@ -8,10 +8,12 @@ public class Character : IBuffable
     public CharacterStats CurrentStats { get; private set; }
     private readonly List<IBuff> _buffs = new List<IBuff>();
 
-    public Character(CharacterStats baseStats)
+    public Character(CharacterStats baseStats, CharacterStats currentStats)
     {
         BaseStates = baseStats;
-        CurrentStats = baseStats;
+        CurrentStats = currentStats;
+
+        CurrentStats.CopyStats(baseStats);
     }
     public void AddBuff(IBuff buff)
     {
@@ -23,16 +25,17 @@ public class Character : IBuffable
     public void RemoveBuff(IBuff buff)
     {
         _buffs.Remove(buff);
+        ApplyBuffs();
         Debug.Log($"Remove {buff}");
     }
 
     private void ApplyBuffs()
     {
-        CurrentStats = BaseStates;
+        CurrentStats.CopyStats(BaseStates);
 
         foreach (IBuff buff in _buffs)
         {
-            CurrentStats = buff.ApplyBuff(CurrentStats);
+            buff.ApplyBuff(CurrentStats);
             Debug.Log("Apply Stats");
         }
     }

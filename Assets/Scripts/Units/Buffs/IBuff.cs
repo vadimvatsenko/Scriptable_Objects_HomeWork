@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface IBuff 
 {
-    CharacterStats ApplyBuff(CharacterStats stats);
+    void ApplyBuff(CharacterStats stats);
 }

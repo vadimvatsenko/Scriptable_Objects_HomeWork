@@ -4,18 +4,18 @@ using UnityEngine;
 
 public class Unit : MonoBehaviour
 {
-    private CharacterStats _characterStats;
+    private CharacterStats _baseCharacterStats;
+    private CharacterStats _currentCharacterStats;
     private CharacterStatsEvent _characterStatsEvent;
     public Character _character { get; private set; }
     private void Start()
     {
-        _characterStats = Resources.Load<CharacterStats>("ScriptableObjects/NewCharacterStats");
+        _baseCharacterStats = Resources.Load<CharacterStats>("ScriptableObjects/BaseCharacterStats");
+        _currentCharacterStats = Resources.Load<CharacterStats>("ScriptableObjects/NewCharacterStats");
         _characterStatsEvent = Resources.Load<CharacterStatsEvent>("ScriptableObjects/NewStatsEvent");
-        _character = new Character(_characterStats);
+        _character = new Character(_baseCharacterStats, _currentCharacterStats);
         Debug.Log(_character.CurrentStats.health);
     }
-
-
 
     private void OnTriggerEnter(Collider other)
     {
@@ -29,12 +29,12 @@ public class Unit : MonoBehaviour
                 _characterStatsEvent.CharacterEvent(_character.CurrentStats.health);
                 break;
             case "Power_Up(Clone)":
-                _character.AddBuff(new SpeedBuff(10));
+
+                _character.AddBuff(new TemporaryBuff(_character, new SpeedBuff(2), 4000));
                 Destroy(other.gameObject);
                 break;
 
         }
     }
-
 
 }

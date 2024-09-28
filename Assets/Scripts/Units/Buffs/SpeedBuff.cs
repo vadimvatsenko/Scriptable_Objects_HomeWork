@@ -11,11 +11,10 @@ public class SpeedBuff : IBuff
         _speedMulty = speedMulty;
     }
 
-    public CharacterStats ApplyBuff(CharacterStats stats)
+    public void ApplyBuff(CharacterStats stats)
     {
         CharacterStats newStats = stats;
-        newStats.speed = _speedMulty;
+        newStats.speed *= _speedMulty;
 
-        return newStats;
     }
 }

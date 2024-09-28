@@ -5,15 +5,16 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     private Rigidbody _rb;
-    private float _speed;
     private PlaneCoords _planeCoords;
+
+    private CharacterStats _characterStats;
 
     void Start()
     {
         _rb = GetComponent<Rigidbody>();
         _planeCoords = FindAnyObjectByType<Plane>()._planeCoords;
-        //_speed = GetComponent<Unit>()
-        _speed = 15f;
+        _characterStats = Resources.Load<CharacterStats>("ScriptableObjects/NewCharacterStats");
+
     }
 
     void Update()
@@ -36,14 +37,14 @@ public class PlayerController : MonoBehaviour
 
         float xClamp = Mathf.Clamp(_rb.transform.position.x, _planeCoords.minX, _planeCoords.maxX);
         float zClamp = Mathf.Clamp(_rb.transform.position.z, _planeCoords.minZ, _planeCoords.maxZ);
-       
+
         if (moveVector != Vector3.zero)
         {
-            _rb.MovePosition(new Vector3(xClamp, _rb.position.y, zClamp) + moveVector * _speed * Time.deltaTime);
+            _rb.MovePosition(new Vector3(xClamp, _rb.position.y, zClamp) + moveVector * _characterStats.speed * Time.deltaTime);
 
             Quaternion unitRotation = Quaternion.LookRotation(moveVector);
 
-            _rb.MoveRotation(Quaternion.Lerp(_rb.rotation, unitRotation, Time.deltaTime * _speed));
+            _rb.MoveRotation(Quaternion.Lerp(_rb.rotation, unitRotation, Time.deltaTime * _characterStats.speed));
         }
     }
 }

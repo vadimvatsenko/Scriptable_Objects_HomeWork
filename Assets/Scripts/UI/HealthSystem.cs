@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-
 public class HealthSystem : MonoBehaviour
 {
     private CharacterStats _characterStats;
@@ -31,7 +30,6 @@ public class HealthSystem : MonoBehaviour
         _healthText.text = _characterStats.health.ToString();
        
         ChengeHealthBarValue(_characterStats.health);
-
     }
 
     private void OnDisable()

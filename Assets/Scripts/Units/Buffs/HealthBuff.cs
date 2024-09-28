@@ -11,11 +11,9 @@ public class HealthBuff : IBuff
         _addHealth = addHealth;
     }
 
-    public CharacterStats ApplyBuff(CharacterStats stats)
+    public void ApplyBuff(CharacterStats stats)
     {
         CharacterStats newStats = stats;
         newStats.health = newStats.health + _addHealth < 100 ? newStats.health + _addHealth : 100;
-        
-        return newStats;
     }
 }
