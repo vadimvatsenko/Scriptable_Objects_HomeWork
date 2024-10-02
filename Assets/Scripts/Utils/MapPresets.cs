@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[Serializable]
 [CreateAssetMenu(fileName = "NewMapPreset", menuName = "Map/Presets")]
 public class MapPresets : ScriptableObject
 {
@@ -11,4 +13,6 @@ public class MapPresets : ScriptableObject
 
     public int _speedBuffs;
     public int _healthBufs;
+
+
 }
