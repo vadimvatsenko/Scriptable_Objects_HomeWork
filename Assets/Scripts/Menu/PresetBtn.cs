@@ -6,27 +6,38 @@ using UnityEngine.UI;
 
 public class PresetBtn : MonoBehaviour, IPointerClickHandler
 {
-    [SerializeField] GameObject[] _cherboxsItem;
-    private ScriptableObject[] _presets;
+    
+    private ScriptableObject _presets;
+    [SerializeField] GameObject _testCheckbox;
+    [SerializeField] MapPresets _mapPresets;
+
+    
 
     private void Awake()
     {
-        Debug.Log("Start");
-        _presets = Resources.LoadAll<ScriptableObject>("ScriptableObjects/MapPresets");
-        foreach (ScriptableObject preset in _presets)
-        {
-            Debug.Log(preset.name);
-        }
+        _presets = Resources.Load<ScriptableObject>("ScriptableObjects/MapPresets");
+        
+
+
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        foreach(var checkBox in _cherboxsItem)
+        //GameObject[] _cherboxsItem = GameObject.Find("CheckBoxGroup").transform.GetComponentsInChildren<GameObject>();
+
+        TextAsset json = (_testCheckbox.GetComponent<CheckboxInfo>().checkboxJson);
+
+        JsonUtility.FromJsonOverwrite(json.ToString(), _mapPresets);
+
+
+
+        /*foreach (var checkBox in _cherboxsItem)
         {
             if(checkBox.GetComponent<Toggle>().isOn)
             {
-                Debug.Log(checkBox.name);
+                
+                JsonUtility.FromJsonOverwrite(json.ToString(), _presets);
             }
-        }
+        }*/
     }
 }

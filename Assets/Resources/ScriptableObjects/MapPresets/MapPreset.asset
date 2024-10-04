@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4b874e050545c4a45ba1feb6f5f3254a, type: 3}
-  m_Name: RockPreset
+  m_Name: MapPreset
   m_EditorClassIdentifier: 
   _trees: 0
-  _rocks: 100
-  _grass: 10000
-  _speedBuffs: 3
-  _healthBufs: 5
+  _rocks: 0
+  _grass: 0
+  _speedBuffs: 0
+  _healthBufs: 0

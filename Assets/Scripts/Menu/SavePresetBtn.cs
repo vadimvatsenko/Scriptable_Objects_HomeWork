@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using System.IO;
+using System.Linq;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
@@ -11,29 +13,20 @@ public class SavePresetBtn : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _nameField;
     [SerializeField] private TextMeshProUGUI _grassCountField;
-    [SerializeField] private TextMeshProUGUI _rocksCount;
-    [SerializeField] private TextMeshProUGUI _treesCount;
-    [SerializeField] private TextMeshProUGUI _speedBuffCount;
-    [SerializeField] private TextMeshProUGUI _healthBuffCount;
-
-    [SerializeField] private Text _testTest;
+    [SerializeField] private TextMeshProUGUI _rocksCountField;
+    [SerializeField] private TextMeshProUGUI _treesCountField;
+    [SerializeField] private TextMeshProUGUI _speedBuffCountField;
+    [SerializeField] private TextMeshProUGUI _healthBuffCountField;
 
     public void SaveToJson()
     {
-
-
         MapPresets mapObj = ScriptableObject.CreateInstance<MapPresets>();
 
-
-
-
-        mapObj._grass = 500;
-
-
-        mapObj._rocks = 10;
-        mapObj._trees = 100;
-        mapObj._healthBufs = 300;
-        mapObj._speedBuffs = 700;
+        mapObj._grass = ParceStringToNumber(_grassCountField.text);
+        mapObj._rocks = ParceStringToNumber(_rocksCountField.text);
+        mapObj._trees = ParceStringToNumber(_treesCountField.text);
+        mapObj._speedBuffs = ParceStringToNumber(_speedBuffCountField.text);
+        mapObj._healthBufs = ParceStringToNumber(_healthBuffCountField.text);
 
         string test = JsonUtility.ToJson(mapObj);
         Debug.Log(test);
@@ -42,11 +35,27 @@ public class SavePresetBtn : MonoBehaviour
 
         File.WriteAllText(filePath, test);
         AssetDatabase.Refresh();
-
     }
 
-    public void LoadToJson()
+    private int ParceStringToNumber(string str)
     {
+        str = RemoveNonDigitCharacters(str).Trim();
+        if(int.TryParse(str, out int number))
+        {
+            return number;
+        }
+        else
+        {
+            Debug.LogError($"{str} wrong parse to int");
+            return 0;
+        }
 
+        
+    }
+
+    // Метод для удаления всех символов, кроме цифр
+    private string RemoveNonDigitCharacters(string str)
+    {
+        return new string(str.Where(char.IsDigit).ToArray());
     }
 }
