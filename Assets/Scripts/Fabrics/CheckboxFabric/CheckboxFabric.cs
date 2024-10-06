@@ -10,19 +10,16 @@ public class CheckBoxFabric
 
     public void GetInputsInfo()
     {
+        GameObject parent = GameObject.Find("CheckBoxGroup");
         TextAsset[] jsonFiles = Resources.LoadAll<TextAsset>("JSONS");
         _checkBoxPrefab = Resources.Load<GameObject>("Prefabs/CheckBox/ChackBoxPrefab");
         
         foreach (var jsonFile in jsonFiles)
         {
-            GameObject _checkbox = GameObject.Instantiate(_checkBoxPrefab);
-            
+            GameObject _checkbox = GameObject.Instantiate(_checkBoxPrefab, parent.transform);            
             _checkbox.name = jsonFile.name;
-            _checkbox.transform.SetParent(GameObject.Find("CheckBoxGroup").transform);
             _checkbox.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = jsonFile.name;
             _checkbox.AddComponent<CheckboxInfo>().SaveJsonToCheckBox(jsonFile);
-            
-            _checkbox.transform.localScale = Vector3.one * 0.1f;
         }
     }
 }
