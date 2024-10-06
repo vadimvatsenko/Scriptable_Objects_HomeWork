@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEditor.ShaderGraph.Serialization;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CheckBoxFabric
 {
@@ -16,7 +17,8 @@ public class CheckBoxFabric
         
         foreach (var jsonFile in jsonFiles)
         {
-            GameObject _checkbox = GameObject.Instantiate(_checkBoxPrefab, parent.transform);            
+            GameObject _checkbox = GameObject.Instantiate(_checkBoxPrefab, parent.transform);
+            _checkbox.GetComponent<Toggle>().group = parent.GetComponent<ToggleGroup>(); // 
             _checkbox.name = jsonFile.name;
             _checkbox.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = jsonFile.name;
             _checkbox.AddComponent<CheckboxInfo>().SaveJsonToCheckBox(jsonFile);
