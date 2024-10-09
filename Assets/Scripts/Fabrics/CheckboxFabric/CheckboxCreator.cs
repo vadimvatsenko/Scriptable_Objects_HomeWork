@@ -5,6 +5,7 @@ using UnityEngine;
 public class CheckboxCreator : MonoBehaviour
 {
     private CheckBoxFabric _checkBoxFabric;
+    
     private void Awake()
     {
         _checkBoxFabric = new CheckBoxFabric();

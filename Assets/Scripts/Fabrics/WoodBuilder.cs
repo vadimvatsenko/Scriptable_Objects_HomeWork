@@ -1,23 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Presets;
 using UnityEngine;
 
 public class WoodBuilder : MonoBehaviour
 {
+    private MapPresets _preset;
     private WoodFabric _woodFabric;
     private List<GameObject> _parentsList = new List<GameObject>();
     private Dictionary<string, List<GameObject>> _prefabsList = new Dictionary<string, List<GameObject>>();
 
     private void Awake()
     {
+        _preset = Resources.Load<MapPresets>("ScriptableObjects/MapPresets/MapPreset");
+
         LoadPrefabs();
         _parentsList = CreateFolderHierarchy();
         _woodFabric = new WoodFabric(_prefabsList);
 
         _woodFabric.CreatePlane(_parentsList[0], 1);
-        _woodFabric.CreateGrass(_parentsList[2], 5000);
-        _woodFabric.CreateTrees(_parentsList[4], 200);
-        _woodFabric.CreateRocks(_parentsList[1], 50);
+        _woodFabric.CreateGrass(_parentsList[2], _preset._grass);
+        _woodFabric.CreateTrees(_parentsList[4], _preset._trees);
+        _woodFabric.CreateRocks(_parentsList[1], _preset._rocks);
         _woodFabric.CreateBuffs(_parentsList[3], 20);
     }
 
