@@ -132,7 +132,7 @@ public class FireBaseService
                 //_emailProfilePanelText.text = _user.Email ?? "";
 
                 //OnAutoLogin?.Invoke();
-                // photoUrl = _user.PhotoUrl.ToString() ?? "";//
+                // photoUrl = _user.PhotoUrl.ToString() ?? "";////
             }
         }
     }
