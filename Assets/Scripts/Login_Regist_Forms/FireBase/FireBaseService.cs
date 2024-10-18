@@ -7,14 +7,16 @@ public class FireBaseService
 {
     public FirebaseAuth _auth { get; private set; }
     public FirebaseUser _user { get; private set; }
-    private Notify _notify => new Notify();
+    private Notify _notify;
 
-    public static event Action OnLoginSuccess;
+    public event Action OnLoginSuccess;
+    public event Action OnRegistSuccess;
 
     public FireBaseService()
     {
+        _notify = new Notify();
         _auth = FirebaseAuth.DefaultInstance;
-        _user = _auth.CurrentUser;
+        _user = _auth.CurrentUser;        
     }
 
     public void RegisterNewUser(string email, string password) // регистрация
@@ -30,7 +32,7 @@ public class FireBaseService
                 }
                 if (task.IsFaulted)
                 {
-                    Debug.Log("Miss2");
+                   Debug.Log("Miss");
                     _notify.CreateNotify("CreateUserWithEmailAndPasswordAsync encountered an error: " + task.Exception);
                     return;
                 }
@@ -38,6 +40,8 @@ public class FireBaseService
                 AuthResult result = task.Result;
                 _notify.CreateNotify($"Firebase user created successfully: {result.User.UserId} - {result.User.Email}");
                 _user = result.User;
+
+                OnRegistSuccess?.Invoke();
                 //SendEmailVerification();
             });
         
@@ -45,9 +49,6 @@ public class FireBaseService
 
     public void LoginInSystem(string email, string password) // логин
     {
-        /*email = "vadim.vatsenko@gmail.com";
-        password = "Vvn28091984!";*/
-        Debug.Log($"email {email} password {password}");
         _auth.SignInWithEmailAndPasswordAsync(email, password).ContinueWith(task =>
         {
             if (task.IsCanceled)
@@ -55,10 +56,12 @@ public class FireBaseService
                 Debug.LogError("SignInWithEmailAndPasswordAsync was canceled.");
                 return;
             }
+
             if (task.IsFaulted)
             {
-                Debug.LogError("SignInWithEmailAndPasswordAsync encountered an error: " + task.Exception);
+                _notify.CreateNotify("Test Noty");
                 _notify.CreateNotify("SignInWithEmailAndPasswordAsync encountered an error: " + task.Exception);
+                Debug.LogError("SignInWithEmailAndPasswordAsync encountered an error: " + task.Exception);
                 return;
             }
 
@@ -113,7 +116,7 @@ public class FireBaseService
         });
     }
 
-    public void AuthStateChanged(object sender, System.EventArgs eventArgs) // текущий пользователь
+    public string[] AuthStateChanged(object sender, System.EventArgs eventArgs) // текущий пользователь
     {
         if (_auth.CurrentUser != _user)
         {
@@ -128,6 +131,12 @@ public class FireBaseService
             if (signedIn)
             {
                 Debug.Log("Signed in " + _user.UserId);
+
+                return new string[]
+                {
+                    _user.DisplayName ?? "",
+                    _user.Email ?? ""
+                };
                 //_nameProfilePanelText.text = _user.DisplayName ?? "";
                 //_emailProfilePanelText.text = _user.Email ?? "";
 
@@ -135,6 +144,8 @@ public class FireBaseService
                 // photoUrl = _user.PhotoUrl.ToString() ?? "";////
             }
         }
+
+        return null;
     }
 
     public void ChangeUserInfo()

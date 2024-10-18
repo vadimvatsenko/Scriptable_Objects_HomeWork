@@ -27,13 +27,13 @@ public class FireBaseApi : MonoBehaviour
     [Header("Forgot Password Panel")]
     [SerializeField] private TextMeshProUGUI _emailForgotPasswordPanelText;
 
-    private FireBaseService _firebaseService;  
+    public FireBaseService _firebaseService { get; private set; }  
     private FieldsValidation _validation;
     private bool _rememberMeToogle;
 
     public event Action OnRegistation; // для кнопки регистрации
 
-    private void Start()
+    private void Awake()
     {
         _firebaseService = new FireBaseService();
         _validation = new FieldsValidation();
@@ -74,6 +74,11 @@ public class FireBaseApi : MonoBehaviour
     private void ExitFromAccount()
     {
         _firebaseService._auth.SignOut();
+    }
+
+    private void GetCurrentUser()
+    {
+
     }
     /*public void AuthStateChangedWrap()
     {

@@ -7,24 +7,27 @@ public class FormsController : MonoBehaviour
 {
     [SerializeField] GameObject loginPanel;
     [SerializeField] GameObject registPanel;
+    [SerializeField] GameObject editUserForm;
     [SerializeField] GameObject forgotPassPanel;
     [SerializeField] GameObject profilePanel;
-    [SerializeField] GameObject editUserForm;
 
-    //private FireBaseService _firebaseService;
+    FireBaseApi _fireBaseApi;
 
-    private void OnEnable()
+    private void Start()
     {
-  
-        FireBaseService.OnLoginSuccess += OpenProfileMenu;//
+        _fireBaseApi = GameObject.FindAnyObjectByType<FireBaseApi>();
+        _fireBaseApi._firebaseService.OnLoginSuccess += OpenProfileMenu;
+        _fireBaseApi._firebaseService.OnRegistSuccess += OpenLoginPanel;
     }
 
     private void OnDisable()
     {
-        FireBaseService.OnLoginSuccess -= OpenProfileMenu;
+        _fireBaseApi._firebaseService.OnLoginSuccess -= OpenProfileMenu;//
+        _fireBaseApi._firebaseService.OnRegistSuccess -= OpenLoginPanel;
     }
     public void OpenLoginPanel()
     {
+        Debug.Log("OpenLoginPanel");
         loginPanel.SetActive(true);
         registPanel.SetActive(false);
         forgotPassPanel.SetActive(false);
@@ -44,6 +47,8 @@ public class FormsController : MonoBehaviour
     public void OpenProfileMenu()
     {
         Debug.Log("OpenProfileMenu");
+        Debug.Log("OpenProfileMenu2");
+        Debug.Log(profilePanel.transform);
         loginPanel.SetActive(false);
         registPanel.SetActive(false);
         forgotPassPanel.SetActive(false);
