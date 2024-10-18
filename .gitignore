@@ -1,0 +1,69 @@
+# Unity project directories to ignore
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+
+/[Mm]emoryCaptures/
+/[Rr]ecordings/
+
+/[Aa]ssets/Plugins/Editor/JetBrains*
+
+# Firebase related files to ignore
+/google-services.json
+/GoogleService-Info.plist
+/firebase-debug.log
+
+# Gradle cache directory
+.gradle/
+
+.vs/
+
+# VS/MD/Consulo solution and project files
+ExportedObj/
+.consulo/
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# Unity3D generated meta files
+*.pidb.meta
+*.pdb.meta
+*.mdb.meta
+
+# Builds
+*.apk
+*.aab
+*.unitypackage
+*.app
+
+# Crashlytics generated file
+crashlytics-build.properties
+
+# Packed Addressables
+/[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
+
+# Temporary auto-generated Android Assets
+/[Aa]ssets/[Ss]treamingAssets/aa.meta
+/[Aa]ssets/[Ss]treamingAssets/aa/*
+/Assets/Firebase/Plugins/x86_64/FirebaseCppApp-*.bundle
+/Assets/Firebase/Plugins/x86_64/FirebaseCppApp-*.so
+
+echo ".vs/" >> .gitignore
+git rm -r --cached .vs
+git add .gitignore
+git commit -m "Ignore .vs folder"

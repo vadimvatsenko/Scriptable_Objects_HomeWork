@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "129168900731",
+    "firebase_url": "https://scriptableobjectshomework-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "scriptableobjectshomework",
+    "storage_bucket": "scriptableobjectshomework.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:129168900731:android:c4082c6c19f1080940d8de",
+        "android_client_info": {
+          "package_name": "com.CatBox.Scriptable_Objects_HomeWork"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "129168900731-2dvf2nesfs9rh7nc7u8akb3eqpc98a1m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCsoOx9schNrAjhUNG2BxP0utYRNyy_PYg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "129168900731-2dvf2nesfs9rh7nc7u8akb3eqpc98a1m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
