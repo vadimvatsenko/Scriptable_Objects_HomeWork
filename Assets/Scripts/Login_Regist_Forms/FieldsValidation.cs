@@ -1,12 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEngine;
-using static UnityEngine.Rendering.DebugUI;
 
 public class FieldsValidation 
 {
-    private Notify _notify => new Notify();
+    //private Notify _notify => new Notify();
+    private NotifyPanel _notifyPanel;
+
+    public FieldsValidation(NotifyPanel notifyPanel) 
+    {
+        _notifyPanel = notifyPanel;
+    }
+
     public bool PassWordValidation(string password)
     {
         string input = password;
@@ -26,28 +30,28 @@ public class FieldsValidation
 
         if (!hasLowerChar.IsMatch(input))
         {
-            _notify.CreateNotify("Пароль должен содержать хотя бы одну строчную букву, Ошибка");
+            _notifyPanel.ShowNotificationMessage("Ошибка", "Пароль должен содержать хотя бы одну строчную букву");
             return false;
         }
         else if (!hasUpperChar.IsMatch(input))
         {
-            _notify.CreateNotify("Пароль должен содержать хотя бы одну заглавную букву, Ошибка");
+            _notifyPanel.ShowNotificationMessage("Ошибка", "Пароль должен содержать хотя бы одну заглавную букву");
             return false;
         }
         else if (!hasMiniMaxChars.IsMatch(input))
         {
-            _notify.CreateNotify("Пароль должен быть длиннее 6 символов, Ошибка");
+            _notifyPanel.ShowNotificationMessage("Ошибка", "Пароль должен быть длиннее 6 символов");
             return false;
         }
         else if (!hasNumber.IsMatch(input))
         {
-            _notify.CreateNotify("Пароль должен содержать хотя бы одно числовое значение, Ошибка");
+            _notifyPanel.ShowNotificationMessage("Ошибка", "Пароль должен содержать хотя бы одно числовое значение");
             return false;
         }
 
         else if (!hasSymbols.IsMatch(input))
         {
-            _notify.CreateNotify("Пароль должен содержать хотя бы один спец. символ, Ошибка");
+            _notifyPanel.ShowNotificationMessage("Ошибка", "Пароль должен содержать хотя бы один спец. символ");
             return false;
         }
         else
@@ -63,21 +67,19 @@ public class FieldsValidation
         // Проверка на пустую строку
         if (string.IsNullOrWhiteSpace(input))
         {
-            //Debug.Log("Поле с email пустое, Ошибка");
-            _notify.CreateNotify("Поле с email пустое, Ошибка");
+            _notifyPanel.ShowNotificationMessage("Ошибка", "Поле с email пустое");
             return false;
         }
 
         // Регулярное выражение для валидации email
         var emailRegex = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
 
-        // Проверка на соответствие формату email
+        
         if (!emailRegex.IsMatch(input))
         {
-            _notify.CreateNotify("Некорректный формат email, Ошибка");
+            _notifyPanel.ShowNotificationMessage("Ошибка", "Некорректный формат email");
             return false;
         }
-
         return true;
     }
 }

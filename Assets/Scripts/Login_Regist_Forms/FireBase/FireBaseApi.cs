@@ -1,6 +1,7 @@
 using Firebase.Auth;
 using System;
 using System.Net.Mail;
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -27,16 +28,21 @@ public class FireBaseApi : MonoBehaviour
     [Header("Forgot Password Panel")]
     [SerializeField] private TextMeshProUGUI _emailForgotPasswordPanelText;
 
+    [Header("Notification")]
+    [SerializeField] NotifyPanel _notifyPanel;
+
     public FireBaseService _firebaseService { get; private set; }  
     private FieldsValidation _validation;
+    
     private bool _rememberMeToogle;
 
     public event Action OnRegistation; // для кнопки регистрации
 
     private void Awake()
     {
-        _firebaseService = new FireBaseService();
-        _validation = new FieldsValidation();
+        
+        _firebaseService = new FireBaseService(_notifyPanel);
+        _validation = new FieldsValidation(_notifyPanel);
         _rememberMeToogle = FindAnyObjectByType<RememberMeToogle>().GetComponent<Toggle>().isOn;
 
         if (_rememberMeToogle)
@@ -68,7 +74,9 @@ public class FireBaseApi : MonoBehaviour
 
     public void OnLoginUser()
     {
-        _firebaseService.LoginInSystem(_emailLoginFormText.text, _passwordLoginFormText.text);
+       
+            _firebaseService.LoginInSystem(_emailLoginFormText.text, _passwordLoginFormText.text);
+       
     }
 
     private void ExitFromAccount()

@@ -1,97 +1,134 @@
+using Firebase;
 using Firebase.Auth;
 using System;
+using System.Threading.Tasks;
 using Unity.VisualScripting;
+
 using UnityEngine;
 
 public class FireBaseService
 {
     public FirebaseAuth _auth { get; private set; }
     public FirebaseUser _user { get; private set; }
-    private Notify _notify;
+
+    // private Task<AuthResult> _resultAsync; // 
+
+    private NotifyPanel _notifyPanel;
 
     public event Action OnLoginSuccess;
     public event Action OnRegistSuccess;
 
-    public FireBaseService()
+    public FireBaseService(NotifyPanel notifyPanel)
     {
-        _notify = new Notify();
+        _notifyPanel = notifyPanel;
         _auth = FirebaseAuth.DefaultInstance;
-        _user = _auth.CurrentUser;        
+        _user = _auth.CurrentUser;
     }
 
-    public void RegisterNewUser(string email, string password) // регистрация
+    public async void RegisterNewUser(string email, string password) // регистрация
     {
-        
-            _auth.CreateUserWithEmailAndPasswordAsync(email, password).ContinueWith(task =>
-            {
-                if (task.IsCanceled)
-                {
-                    Debug.Log("Miss1");
-                    _notify.CreateNotify("CreateUserWithEmailAndPasswordAsync was canceled.");
-                    return;
-                }
-                if (task.IsFaulted)
-                {
-                   Debug.Log("Miss");
-                    _notify.CreateNotify("CreateUserWithEmailAndPasswordAsync encountered an error: " + task.Exception);
-                    return;
-                }
-
-                AuthResult result = task.Result;
-                _notify.CreateNotify($"Firebase user created successfully: {result.User.UserId} - {result.User.Email}");
-                _user = result.User;
-
-                OnRegistSuccess?.Invoke();
-                //SendEmailVerification();
-            });
-        
-    }
-
-    public void LoginInSystem(string email, string password) // логин
-    {
-        _auth.SignInWithEmailAndPasswordAsync(email, password).ContinueWith(task =>
+        Task<AuthResult> resultAsync;
+        try
         {
-            if (task.IsCanceled)
+            resultAsync = _auth.CreateUserWithEmailAndPasswordAsync(email, password);
+
+            await resultAsync;
+            if (resultAsync.IsCanceled)
             {
-                Debug.LogError("SignInWithEmailAndPasswordAsync was canceled.");
+                Debug.Log("Miss1");
+                _notifyPanel.ShowNotificationMessage("Error", "CreateUserWithEmailAndPasswordAsync was canceled.");
+                return;
+            }
+            if (resultAsync.IsFaulted)
+            {
+
+                _notifyPanel.ShowNotificationMessage($"{resultAsync.Exception}", "CreateUserWithEmailAndPasswordAsync encountered an error");
                 return;
             }
 
-            if (task.IsFaulted)
-            {
-                _notify.CreateNotify("Test Noty");
-                _notify.CreateNotify("SignInWithEmailAndPasswordAsync encountered an error: " + task.Exception);
-                Debug.LogError("SignInWithEmailAndPasswordAsync encountered an error: " + task.Exception);
-                return;
-            }
+            AuthResult result = resultAsync.Result;
+            _notifyPanel.ShowNotificationMessage("Firebase user created successfully", $"{result.User.UserId} - {result.User.Email}");
+            _user = result.User;
 
-            AuthResult result = task.Result;
-            //_notify.CreateNotify($"Firebase user created successfully: {result.User.Email} - {result.User.UserId}");
-            
-            OnLoginSuccess?.Invoke();
-            Debug.Log("Success");
-        });
+            OnRegistSuccess?.Invoke();
+            SendEmailVerification();
+
+        }
+        catch (FirebaseException ex)
+        {
+
+            _notifyPanel.ShowNotificationMessage($"{ex}", "CreateUserWithEmailAndPasswordAsync encountered an error");
+        }
+
+              
     }
 
-    public void SendEmailVerification() // письмо с верификацией
+    public async void LoginInSystem(string email, string password) // логин
+    {
+
+        try
+        {
+            Task <AuthResult> resultAsync = _auth.SignInWithEmailAndPasswordAsync(email, password);
+
+            await resultAsync;
+
+            if (resultAsync.IsCanceled)
+            {
+                _notifyPanel.ShowNotificationMessage("Error", "SignInWithEmailAndPasswordAsync was canceled.");
+                return;
+            }
+
+            if (resultAsync.IsFaulted)
+            {
+                _notifyPanel.ShowNotificationMessage($"{resultAsync.Exception}", "SignInWithEmailAndPasswordAsync encountered an error");
+                return;
+            }
+
+            AuthResult result = resultAsync.Result;
+
+            _notifyPanel.ShowNotificationMessage("Firebase user created successfully", $"{result.User.Email} - {result.User.UserId}");
+
+            OnLoginSuccess?.Invoke();
+        }
+        catch (FirebaseException ex )
+        {
+
+            _notifyPanel.ShowNotificationMessage($"{ex}", "SignInWithEmailAndPasswordAsync encountered an error");
+        }
+        
+
+        
+    }
+
+    public async void SendEmailVerification() // письмо с верификацией
     {
         if (_user != null)
         {
-            _user.SendEmailVerificationAsync().ContinueWith(task =>
+
+            try
             {
-                if (task.IsCanceled)
+                Task resultAsync = _user.SendEmailVerificationAsync();
+                await resultAsync;
+
+                if (resultAsync.IsCanceled)
                 {
                     Debug.LogError("SendEmailVerificationAsync was canceled.");
                     return;
                 }
-                if (task.IsFaulted)
+                if (resultAsync.IsFaulted)
                 {
-                    Debug.LogError("SendEmailVerificationAsync encountered an error: " + task.Exception);
+                    Debug.LogError("SendEmailVerificationAsync encountered an error: " + resultAsync.Exception);
                     return;
                 }
 
-                Debug.Log("Email sent successfully.");
-            });
+                _notifyPanel.ShowNotificationMessage("Message", "Message send successful");
+            }
+            catch (FirebaseException ex)
+            {
+                Debug.LogError(ex);
+                _notifyPanel.ShowNotificationMessage($"{ex}", "Error");
+            }
+            
         }
     }
 
@@ -157,7 +194,8 @@ public class FireBaseService
                 //DisplayName = _nameProfilePanelText.text,
                 //PhotoUrl = new System.Uri("https://example.com/jane-q-user/profile.jpg"),
             };
-            _user.UpdateUserProfileAsync(profile).ContinueWith(task => {
+            _user.UpdateUserProfileAsync(profile).ContinueWith(task =>
+            {
                 if (task.IsCanceled)
                 {
                     Debug.LogError("UpdateUserProfileAsync was canceled.");
@@ -177,5 +215,4 @@ public class FireBaseService
         }
     }
 
-    
 }

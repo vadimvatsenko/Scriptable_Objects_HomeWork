@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+
+using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -11,7 +13,7 @@ public class FormsController : MonoBehaviour
     [SerializeField] GameObject forgotPassPanel;
     [SerializeField] GameObject profilePanel;
 
-    FireBaseApi _fireBaseApi;
+    private FireBaseApi _fireBaseApi;
 
     private void Start()
     {
@@ -32,28 +34,28 @@ public class FormsController : MonoBehaviour
         registPanel.SetActive(false);
         forgotPassPanel.SetActive(false);
         profilePanel.SetActive(false);
-        editUserForm.SetActive(false);
+        //editUserForm.SetActive(false);
     }
 
     public void OpenRegistPanel()
     {
         loginPanel.SetActive(false);
         registPanel.SetActive(true);
-        forgotPassPanel.SetActive(false);
+        //forgotPassPanel.SetActive(false);
         profilePanel.SetActive(false);
-        editUserForm.SetActive(false);
+        //editUserForm.SetActive(false);
     }
 
-    public void OpenProfileMenu()
-    {
-        Debug.Log("OpenProfileMenu");
-        Debug.Log("OpenProfileMenu2");
-        Debug.Log(profilePanel.transform);
-        loginPanel.SetActive(false);
-        registPanel.SetActive(false);
-        forgotPassPanel.SetActive(false);
-        profilePanel.SetActive(true);
-        editUserForm.SetActive(false);
+    public async void OpenProfileMenu()
+    {        
+        
+            Debug.Log("OpenProfileMenu");
+            loginPanel.SetActive(false);
+            //registPanel.SetActive(false);
+            //forgotPassPanel.SetActive(false);
+            profilePanel.SetActive(true);
+            //editUserForm.SetActive(false);
+
     }
 
     public void OpenForgotPass()
@@ -62,7 +64,7 @@ public class FormsController : MonoBehaviour
         registPanel.SetActive(false);
         forgotPassPanel.SetActive(true);
         profilePanel.SetActive(false);
-        editUserForm.SetActive(false);
+        //editUserForm.SetActive(false);
     }
 
     public void OpenEditUserForm()
