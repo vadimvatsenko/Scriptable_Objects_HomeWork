@@ -33,24 +33,21 @@ public class FireBaseApi : MonoBehaviour
 
     public FireBaseService _firebaseService { get; private set; }  
     private FieldsValidation _validation;
-    
+   
     private bool _rememberMeToogle;
-
-    public event Action OnRegistation; // для кнопки регистрации
 
     private void Awake()
     {
-        
         _firebaseService = new FireBaseService(_notifyPanel);
         _validation = new FieldsValidation(_notifyPanel);
         _rememberMeToogle = FindAnyObjectByType<RememberMeToogle>().GetComponent<Toggle>().isOn;
 
+       
         if (_rememberMeToogle)
         {
-            /*_auth.StateChanged += AuthStateChanged;
-            AuthStateChanged(this, null);*/
+            _firebaseService.AuthChangerWrap();
+            
         }
-
     }
 
     private void OnDisable()
@@ -73,28 +70,34 @@ public class FireBaseApi : MonoBehaviour
     }
 
     public void OnLoginUser()
-    {
-       
-            _firebaseService.LoginInSystem(_emailLoginFormText.text, _passwordLoginFormText.text);
-       
+    {      
+        _firebaseService.LoginInSystem(_emailLoginFormText.text, _passwordLoginFormText.text);
+        GetCurrentUser();
     }
 
-    private void ExitFromAccount()
+    public void ExitFromAccount()
     {
         _firebaseService._auth.SignOut();
+
     }
 
     private void GetCurrentUser()
     {
-
+        if (_firebaseService._auth.CurrentUser != null)
+        {
+            bool isName = string.IsNullOrEmpty(_firebaseService._auth.CurrentUser.DisplayName);
+            _nameProfileFormText.text = isName ? "Undefined" : _firebaseService._auth.CurrentUser.DisplayName;
+            _emailProfileFormText.text = _firebaseService._auth.CurrentUser.Email;
+        }
+        else
+        {
+            _nameProfileFormText.text = "No user logged in";
+        }
     }
-    /*public void AuthStateChangedWrap()
-    {
-        AuthStateChanged(this, null);
-    }
+    
 
     private void Exit()
     {
-        _auth.SignOut();
-    }*/
+        
+    }
 }

@@ -9,13 +9,10 @@ public class NotifyPanel : MonoBehaviour
     [SerializeField] TextMeshProUGUI _errorLabel;
     [SerializeField] TextMeshProUGUI _errorMessage;
 
-    private void Start()
-    {
-        /*_errorLabel = this.transform.GetChild(0).transform.GetChild(0).GetComponent<TextMeshProUGUI>();
-        _errorMessage = this.transform.GetChild(1).GetComponent<TextMeshProUGUI>();*/
-    }
-    public void ShowNotificationMessage(string title, string message)
+    public void ShowNotificationMessage(string title, string message, Color color)
     {   
+        _errorLabel.color = color;
+        _errorMessage.color = color;
         _errorLabel.text = title;
         _errorMessage.text = message;
 

@@ -2,16 +2,12 @@ using Firebase;
 using Firebase.Auth;
 using System;
 using System.Threading.Tasks;
-using Unity.VisualScripting;
-
 using UnityEngine;
 
 public class FireBaseService
 {
     public FirebaseAuth _auth { get; private set; }
     public FirebaseUser _user { get; private set; }
-
-    // private Task<AuthResult> _resultAsync; // 
 
     private NotifyPanel _notifyPanel;
 
@@ -22,45 +18,53 @@ public class FireBaseService
     {
         _notifyPanel = notifyPanel;
         _auth = FirebaseAuth.DefaultInstance;
-        _user = _auth.CurrentUser;
+              
+        _auth.StateChanged += AuthStateChanged;
+        AuthStateChanged(this, null);
+    }
+
+    ~FireBaseService()
+    {
+        _auth.StateChanged -= AuthStateChanged;
+        _auth = null;
+    }
+
+    public void AuthChangerWrap()
+    {
+        AuthStateChanged(this, null);
+        
     }
 
     public async void RegisterNewUser(string email, string password) // регистрация
     {
-        Task<AuthResult> resultAsync;
         try
         {
-            resultAsync = _auth.CreateUserWithEmailAndPasswordAsync(email, password);
+            Task<AuthResult> resultAsync = _auth.CreateUserWithEmailAndPasswordAsync(email, password);
 
             await resultAsync;
             if (resultAsync.IsCanceled)
             {
-                Debug.Log("Miss1");
-                _notifyPanel.ShowNotificationMessage("Error", "CreateUserWithEmailAndPasswordAsync was canceled.");
+                _notifyPanel.ShowNotificationMessage("Error", "CreateUserWithEmailAndPasswordAsync was canceled.", Color.red);
                 return;
             }
             if (resultAsync.IsFaulted)
             {
-
-                _notifyPanel.ShowNotificationMessage($"{resultAsync.Exception}", "CreateUserWithEmailAndPasswordAsync encountered an error");
+                _notifyPanel.ShowNotificationMessage($"{resultAsync.Exception}", "CreateUserWithEmailAndPasswordAsync encountered an error", Color.red);
                 return;
             }
 
             AuthResult result = resultAsync.Result;
-            _notifyPanel.ShowNotificationMessage("Firebase user created successfully", $"{result.User.UserId} - {result.User.Email}");
+            _notifyPanel.ShowNotificationMessage("Firebase user created successfully", $"{result.User.UserId} - {result.User.Email}", Color.green);
             _user = result.User;
 
             OnRegistSuccess?.Invoke();
-            SendEmailVerification();
+            //SendEmailVerification();
 
         }
         catch (FirebaseException ex)
         {
-
-            _notifyPanel.ShowNotificationMessage($"{ex}", "CreateUserWithEmailAndPasswordAsync encountered an error");
+            _notifyPanel.ShowNotificationMessage($"{ex}", "CreateUserWithEmailAndPasswordAsync encountered an error", Color.red);
         }
-
-              
     }
 
     public async void LoginInSystem(string email, string password) // логин
@@ -68,41 +72,44 @@ public class FireBaseService
 
         try
         {
-            Task <AuthResult> resultAsync = _auth.SignInWithEmailAndPasswordAsync(email, password);
+            Task<AuthResult> resultAsync = _auth.SignInWithEmailAndPasswordAsync(email, password);
 
             await resultAsync;
 
             if (resultAsync.IsCanceled)
             {
-                _notifyPanel.ShowNotificationMessage("Error", "SignInWithEmailAndPasswordAsync was canceled.");
+                _notifyPanel.ShowNotificationMessage("Error", "SignInWithEmailAndPasswordAsync was canceled.", Color.red);
                 return;
             }
 
             if (resultAsync.IsFaulted)
             {
-                _notifyPanel.ShowNotificationMessage($"{resultAsync.Exception}", "SignInWithEmailAndPasswordAsync encountered an error");
+                _notifyPanel.ShowNotificationMessage($"{resultAsync.Exception.Message}", "SignInWithEmailAndPasswordAsync encountered an error", Color.red);
                 return;
             }
 
             AuthResult result = resultAsync.Result;
 
-            _notifyPanel.ShowNotificationMessage("Firebase user created successfully", $"{result.User.Email} - {result.User.UserId}");
+            _notifyPanel.ShowNotificationMessage(
+                            "User Enter Successful",
+                            $"User Name: {(string.IsNullOrEmpty(result.User.DisplayName) ? "Underfined" : result.User.DisplayName)}, \n" +
+                            $"User Email: {result.User.Email}, \n" +
+                            $"UserID: {result.User.UserId}",
+                            Color.green);
+
+
 
             OnLoginSuccess?.Invoke();
         }
-        catch (FirebaseException ex )
+        catch (FirebaseException ex)
         {
-
-            _notifyPanel.ShowNotificationMessage($"{ex}", "SignInWithEmailAndPasswordAsync encountered an error");
+            _notifyPanel.ShowNotificationMessage($"{ex.Message}", "SignInWithEmailAndPasswordAsync encountered an error", Color.red);
         }
-        
-
-        
     }
 
     public async void SendEmailVerification() // письмо с верификацией
     {
-        if (_user != null)
+        if (_auth.CurrentUser != null)
         {
 
             try
@@ -121,14 +128,14 @@ public class FireBaseService
                     return;
                 }
 
-                _notifyPanel.ShowNotificationMessage("Message", "Message send successful");
+                _notifyPanel.ShowNotificationMessage("Message", "Message send successful", Color.green);
             }
             catch (FirebaseException ex)
             {
-                Debug.LogError(ex);
-                _notifyPanel.ShowNotificationMessage($"{ex}", "Error");
+                Debug.LogError(ex.Message);
+                _notifyPanel.ShowNotificationMessage($"{ex.Message}", "Error Send Verify Message", Color.red);
             }
-            
+
         }
     }
 
@@ -153,8 +160,9 @@ public class FireBaseService
         });
     }
 
-    public string[] AuthStateChanged(object sender, System.EventArgs eventArgs) // текущий пользователь
+    public void AuthStateChanged(object sender, System.EventArgs eventArgs) // текущий пользователь
     {
+        
         if (_auth.CurrentUser != _user)
         {
             bool signedIn = _user != _auth.CurrentUser && _auth.CurrentUser != null
@@ -165,53 +173,29 @@ public class FireBaseService
             }
 
             _user = _auth.CurrentUser;
+            
             if (signedIn)
             {
-                Debug.Log("Signed in " + _user.UserId);
+                _notifyPanel.ShowNotificationMessage(
+                             "User Enter Successful",
+                             $"User Name: {(string.IsNullOrEmpty(_user.DisplayName) ? "Underfined" : _user.DisplayName)}, \n" +
+                             $"User Email: {_user.Email}, \n" +
+                             $"UserID: {_user.UserId}",
+                             Color.green);
 
-                return new string[]
+
+                //OnLoginSuccess?.Invoke();
+
+                if (OnLoginSuccess != null)
                 {
-                    _user.DisplayName ?? "",
-                    _user.Email ?? ""
-                };
-                //_nameProfilePanelText.text = _user.DisplayName ?? "";
-                //_emailProfilePanelText.text = _user.Email ?? "";
-
-                //OnAutoLogin?.Invoke();
-                // photoUrl = _user.PhotoUrl.ToString() ?? "";////
+                    Debug.Log("Invoking OnLoginSuccess");
+                    OnLoginSuccess.Invoke();
+                }
+                else
+                {
+                    Debug.Log("No subscribers for OnLoginSuccess");
+                }
             }
-        }
-
-        return null;
-    }
-
-    public void ChangeUserInfo()
-    {
-        if (_user != null)
-        {
-            Firebase.Auth.UserProfile profile = new Firebase.Auth.UserProfile
-            {
-                //DisplayName = _nameProfilePanelText.text,
-                //PhotoUrl = new System.Uri("https://example.com/jane-q-user/profile.jpg"),
-            };
-            _user.UpdateUserProfileAsync(profile).ContinueWith(task =>
-            {
-                if (task.IsCanceled)
-                {
-                    Debug.LogError("UpdateUserProfileAsync was canceled.");
-                    return;
-                }
-                if (task.IsFaulted)
-                {
-                    Debug.LogError("UpdateUserProfileAsync encountered an error: " + task.Exception);
-                    return;
-                }
-
-
-                Debug.Log("User profile updated successfully.");
-                //OnChangeSuccess?.Invoke();
-
-            });
         }
     }
 

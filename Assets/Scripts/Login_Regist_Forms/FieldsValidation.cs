@@ -3,9 +3,7 @@ using UnityEngine;
 
 public class FieldsValidation 
 {
-    //private Notify _notify => new Notify();
     private NotifyPanel _notifyPanel;
-
     public FieldsValidation(NotifyPanel notifyPanel) 
     {
         _notifyPanel = notifyPanel;
@@ -17,7 +15,7 @@ public class FieldsValidation
 
         if (string.IsNullOrWhiteSpace(input))
         {
-            Debug.Log("Поле с паролем пустое, Ошибка");
+            _notifyPanel.ShowNotificationMessage("Error", "Password field is empty", Color.red);
             return false;
         }
 
@@ -30,28 +28,28 @@ public class FieldsValidation
 
         if (!hasLowerChar.IsMatch(input))
         {
-            _notifyPanel.ShowNotificationMessage("Ошибка", "Пароль должен содержать хотя бы одну строчную букву");
+            _notifyPanel.ShowNotificationMessage("Error", "Password must contain at least one lowercase letter", Color.red);
             return false;
         }
         else if (!hasUpperChar.IsMatch(input))
         {
-            _notifyPanel.ShowNotificationMessage("Ошибка", "Пароль должен содержать хотя бы одну заглавную букву");
+            _notifyPanel.ShowNotificationMessage("Error", "Password must contain at least one capital letter", Color.red);
             return false;
         }
         else if (!hasMiniMaxChars.IsMatch(input))
         {
-            _notifyPanel.ShowNotificationMessage("Ошибка", "Пароль должен быть длиннее 6 символов");
+            _notifyPanel.ShowNotificationMessage("Error", "Password must be longer than 6 characters", Color.red);
             return false;
         }
         else if (!hasNumber.IsMatch(input))
         {
-            _notifyPanel.ShowNotificationMessage("Ошибка", "Пароль должен содержать хотя бы одно числовое значение");
+            _notifyPanel.ShowNotificationMessage("Error", "Password must contain at least one numeric value", Color.red);
             return false;
         }
 
         else if (!hasSymbols.IsMatch(input))
         {
-            _notifyPanel.ShowNotificationMessage("Ошибка", "Пароль должен содержать хотя бы один спец. символ");
+            _notifyPanel.ShowNotificationMessage("Error", "Password must contain at least one special character", Color.red);
             return false;
         }
         else
@@ -67,7 +65,7 @@ public class FieldsValidation
         // Проверка на пустую строку
         if (string.IsNullOrWhiteSpace(input))
         {
-            _notifyPanel.ShowNotificationMessage("Ошибка", "Поле с email пустое");
+            _notifyPanel.ShowNotificationMessage("Error", "Email field is empty", Color.red);
             return false;
         }
 
@@ -77,7 +75,7 @@ public class FieldsValidation
         
         if (!emailRegex.IsMatch(input))
         {
-            _notifyPanel.ShowNotificationMessage("Ошибка", "Некорректный формат email");
+            _notifyPanel.ShowNotificationMessage("Error", "Incorrect email format", Color.red);
             return false;
         }
         return true;
