@@ -1,7 +1,4 @@
-
-using AuthLoginSample.Utils;
-
-namespace AuthLoginSample.Model
+namespace AuthLoginSample
 {
 
     public class UserModel // Запись имени юзера

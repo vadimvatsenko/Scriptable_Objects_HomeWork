@@ -1,4 +1,5 @@
-namespace AuthLoginSample.Utils{
+namespace AuthLoginSample
+{
     using System;
 
     public class Observable<T> // дженерик класс который будет принимать дженериковое значение // в данном случае будет принимать страницу

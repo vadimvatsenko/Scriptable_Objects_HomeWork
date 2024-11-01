@@ -1,4 +1,5 @@
-namespace AuthLoginSample.Service{
+namespace AuthLoginSample
+{
     using Firebase;
     using Firebase.Auth;
     using System;
@@ -20,7 +21,7 @@ namespace AuthLoginSample.Service{
         public FireBaseService(NotifyPageView notifyPageView)
         {
             _auth = FirebaseAuth.DefaultInstance;
-            _auth.StateChanged += AuthStateChanged;
+            //_auth.StateChanged += AuthStateChanged;
             //_user = _auth.CurrentUser; 
             _notifyPageView = notifyPageView;
         }

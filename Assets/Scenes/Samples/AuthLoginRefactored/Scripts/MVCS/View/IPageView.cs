@@ -1,6 +1,6 @@
 using System.Drawing;
 
-namespace AuthLoginSample.View
+namespace AuthLoginSample
 {
     public interface IPageView // интерфейс, показывать или скрывать страницу
     {

@@ -1,14 +1,9 @@
-﻿using AuthLoginSample.View;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Assets.Scenes.Samples.AuthLoginRefactored.Scripts.MVCS.View
+namespace AuthLoginSample
 {
     public class ProfilePageView : MonoBehaviour, IPageView
     {
@@ -26,6 +21,7 @@ namespace Assets.Scenes.Samples.AuthLoginRefactored.Scripts.MVCS.View
         public Action OnEnterGameClick;
         public Action OnProfileEditClick;
 
+ 
         public void Hide()
         {
            gameObject.SetActive(false);
@@ -43,17 +39,17 @@ namespace Assets.Scenes.Samples.AuthLoginRefactored.Scripts.MVCS.View
             editUserProfileButton.onClick.AddListener(ProfileEditClick);
         }
 
-        public void QuitClick()
+        private void QuitClick()
         {
             OnQuitClick?.Invoke();
         }
 
-        public void EnterGameClick()
+        private void EnterGameClick()
         {
             OnEnterGameClick?.Invoke();
         }
 
-        public void ProfileEditClick()
+        private void ProfileEditClick()
         {
             OnProfileEditClick?.Invoke();
         }

@@ -11664,7 +11664,7 @@ MonoBehaviour:
   passwordText: {fileID: 391405567}
   registrationButton: {fileID: 767172557}
   loginButton: {fileID: 354337604}
-  _rememberMeToggle: {fileID: 0}
+  rememberMeToggle: {fileID: 1923088338}
 --- !u!1 &1898089632
 GameObject:
   m_ObjectHideFlags: 0

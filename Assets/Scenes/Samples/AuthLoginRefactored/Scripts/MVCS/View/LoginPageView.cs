@@ -1,4 +1,4 @@
-namespace AuthLoginSample.View
+namespace AuthLoginSample
 {
     using System;
     using TMPro;
@@ -12,13 +12,22 @@ namespace AuthLoginSample.View
 
         [SerializeField] private Button registrationButton; // кнопка регистрации
         [SerializeField] private Button loginButton;
-        [SerializeField] private Toggle _rememberMeToggle;
+        [SerializeField] private Toggle rememberMeToggle;
 
         public string Email => loginText.text;
         public string Password => passwordText.text;
 
         public Action OnRegisterClicked; // событие по нажатию кнопки регистрации
         public Action OnLoginClicked;
+        public Action<bool> OnRememberMeToggleClicked;
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                OnLoginClicked?.Invoke();
+            }
+        }
 
         public void Hide()
         {
@@ -34,6 +43,19 @@ namespace AuthLoginSample.View
         {
             registrationButton.onClick.AddListener(OnRegisterClickedUnity); // регистрируем метод, который будет вызывать метод OnRegisterClickedUnity и он будет вызывать событие
             loginButton.onClick.AddListener(OnLoginClickedUnity);
+            rememberMeToggle.onValueChanged.AddListener(OnRememberMeClickedUnity);
+        }
+
+        private void OnRememberMeClickedUnity(bool arg0)
+        {
+            OnRememberMeToggleClicked?.Invoke(arg0);
+        }
+
+        private void OnDisable()
+        {
+            registrationButton.onClick.RemoveAllListeners();
+            loginButton.onClick.RemoveAllListeners();
+            rememberMeToggle.onValueChanged.RemoveAllListeners();
         }
 
         private void OnRegisterClickedUnity()
@@ -45,5 +67,6 @@ namespace AuthLoginSample.View
         {
             OnLoginClicked?.Invoke();
         }
+
     }
 }

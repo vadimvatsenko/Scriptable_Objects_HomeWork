@@ -1,45 +1,54 @@
 using System;
-using Assets.Scenes.Samples.AuthLoginRefactored.Scripts.MVCS.View;
-using AuthLoginSample.Controler;
-using AuthLoginSample.Model;
-using AuthLoginSample.View;
 using UnityEngine;
 
-public class AuthInitializerMVC : MonoBehaviour // инициализация, будет висеть на пустом объекте на сцене
+namespace AuthLoginSample
 {
-    [SerializeField] private LoginPageView loginPageView; // страница логинизации
-    [SerializeField] private RegistrationPageView registrationPageView; // страница регистрации
-    [SerializeField] private ProfilePageView profilePageView; // страница профиля 
-    [SerializeField] private NotifyPageView notifyPageView;
-    
-    private PageRoutingModel pageRoutingModel; // инициализация страницы
-    private UserModel userModel; // инициализация юзера
-    private RegistrationController registrationController; 
-    private PageRoutingController pageRoutingController;
-    private AuthLoginSample.Service.FireBaseService fireBaseService; // инициализация Firebase
-
-    void Start()
+    public class AuthInitializerMVC : MonoBehaviour // инициализация, будет висеть на пустом объекте на сцене
     {
-        Initialize();
-    }
+        [SerializeField] private LoginPageView loginPageView; // страница логинизации
+        [SerializeField] private RegistrationPageView registrationPageView; // страница регистрации
+        [SerializeField] private ProfilePageView profilePageView; // страница профиля 
+        [SerializeField] private NotifyPageView notifyPageView;
 
-    private void Initialize()
-    {
-        pageRoutingModel = new (); // экземпляр страницы
-        userModel = new (); // экземпляр юзера
-        fireBaseService = new(notifyPageView); // экземпляр Firebase
+        private PageRoutingModel _pageRoutingModel; // инициализация страницы
+        private UserModel _userModel; // инициализация юзера
+        private RegistrationController _registrationController;
+        private LoginController _loginController;
+        private PageRoutingController _pageRoutingController;
+        private FireBaseService _fireBaseService; // инициализация Firebase
+        private ValidationService _validationService;
 
-        loginPageView.Initialize(); // инициализация loginPageView там вешаются слушатели
-        registrationPageView.Initialize(); // // инициализация registrationPageView там вешаются слушатели
-        profilePageView.Initialize();
+        void Start()
+        {
+            Initialize();
+        }
 
-        pageRoutingController = new(pageRoutingModel, loginPageView, registrationPageView, profilePageView);
-        // экземпляр управления страницами, 
+        private void Initialize()
+        {
+            
+            _pageRoutingModel = new PageRoutingModel(); // экземпляр страницы
+            _userModel = new UserModel(); // экземпляр юзера
+            
+            
+            loginPageView.Initialize(); // инициализация loginPageView там вешаются слушатели
+            registrationPageView.Initialize(); // // инициализация registrationPageView там вешаются слушатели
+            profilePageView.Initialize();
+            notifyPageView.Initialize();
+            _validationService = new ValidationService(notifyPageView);
+            _fireBaseService = new(notifyPageView); // экземпляр Firebase
+            _pageRoutingController = new(_pageRoutingModel, loginPageView, registrationPageView, profilePageView);
+            // экземпляр управления страницами, 
 
-        pageRoutingController.Initialize();
+            _pageRoutingController.Initialize();
 
-        registrationController = new(registrationPageView, loginPageView, profilePageView, fireBaseService, pageRoutingController);
+            _registrationController = new(registrationPageView, loginPageView, profilePageView, _fireBaseService, _pageRoutingController);
 
-        registrationController.Initialize();
+            _registrationController.Initialize();
+
+            _loginController = new(_fireBaseService, loginPageView, _pageRoutingController);
+            _loginController.Initialize();
+
+
+        }
     }
 }

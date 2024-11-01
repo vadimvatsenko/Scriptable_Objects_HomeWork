@@ -1,4 +1,5 @@
-namespace AuthLoginSample.Model{
+namespace AuthLoginSample
+{
     public enum CurrentPage // перечисление страниц
     {
         Login,

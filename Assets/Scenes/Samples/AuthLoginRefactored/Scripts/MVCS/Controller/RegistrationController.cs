@@ -1,16 +1,12 @@
 using System;
-using AuthLoginSample.Model;
-using AuthLoginSample.View;
-using AuthLoginSample.Service;
-using System.Diagnostics;
-using UnityEditor.iOS.Xcode;
-using Assets.Scenes.Samples.AuthLoginRefactored.Scripts.MVCS.View;
 
-namespace AuthLoginSample.Controler{
+
+namespace AuthLoginSample
+{
     public class RegistrationController // тут происходит регистрация всех контроллеров
     {
         //Service
-        private readonly Service.FireBaseService fireBaseService; // сервис с методами FireBase
+        private readonly FireBaseService fireBaseService; // сервис с методами FireBase
 
         //View
         private readonly LoginPageView loginPageView;
@@ -23,7 +19,7 @@ namespace AuthLoginSample.Controler{
         public RegistrationController(RegistrationPageView registrationPageView,
                                        LoginPageView loginPageView,
                                        ProfilePageView profilePageView,
-                                      Service.FireBaseService fireBaseService,
+                                      FireBaseService fireBaseService,
                                       PageRoutingController pageRoutingController)
         {
             this.registrationPageView = registrationPageView; // страница регистрации
@@ -36,11 +32,11 @@ namespace AuthLoginSample.Controler{
         public void Initialize() // при инициализации происходит подписка
         {
             registrationPageView.OnRegistrationButtonClicked += OnRegistrationClicked;
-            loginPageView.OnLoginClicked += OnEnterUserByEmailAndPassword;
+            //loginPageView.OnLoginClicked += OnEnterUserByEmailAndPassword;
             profilePageView.OnQuitClick += OnQuitClicked;
 
             this.fireBaseService.OnRegistSuccess += OnRegistSuccess;
-            this.fireBaseService.OnLoginSuccess += OnLoginSuccess; 
+            //this.fireBaseService.OnLoginSuccess += OnLoginSuccess; 
         }
 
         ~RegistrationController()
@@ -50,13 +46,13 @@ namespace AuthLoginSample.Controler{
             profilePageView.OnQuitClick -= OnQuitClicked;
 
             this.fireBaseService.OnRegistSuccess -= OnRegistSuccess;
-            this.fireBaseService.OnLoginSuccess -= OnLoginSuccess;
+            //this.fireBaseService.OnLoginSuccess -= OnLoginSuccess;
         }
 
-        private void OnLoginSuccess()
+        /*private void OnLoginSuccess()
         {
             pageRoutingController.ChangePage(CurrentPage.Profile);
-        }
+        }*/
         private void OnRegistSuccess() // при успешной регистрации меняем текующую страницу на логин
         {
             pageRoutingController.ChangePage(CurrentPage.Login);

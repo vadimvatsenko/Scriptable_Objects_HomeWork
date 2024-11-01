@@ -1,4 +1,4 @@
-namespace AuthLoginSample.View
+namespace AuthLoginSample
 {
     using System;
     using TMPro;

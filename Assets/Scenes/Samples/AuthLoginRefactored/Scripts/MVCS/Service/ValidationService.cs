@@ -1,20 +1,25 @@
-namespace AuthLoginSample.Service
+namespace AuthLoginSample
 {
-    using System.Collections;
-    using System.Collections.Generic;
     using System.Text.RegularExpressions;
     using UnityEngine;
-    using static UnityEngine.Rendering.DebugUI;
 
-    public class ValidationService  // сервис валидации полей
+    public class ValidationService  
     {
+        private NotifyPageView _notifyPageView;
+        private Color _errorColor => Color.red;
+
+        public ValidationService(NotifyPageView notifyPageView)
+        {
+            _notifyPageView = notifyPageView;
+        }
+
         public bool PassWordValidation(string password)
         {
             string input = password;
 
             if (string.IsNullOrWhiteSpace(input))
             {
-                UnityEngine.Debug.Log("Поле с паролем пустое, Ошибка");
+                _notifyPageView.ShowMessage("Error", "The password field is empty", _errorColor);
                 return false;
             }
 
@@ -27,28 +32,28 @@ namespace AuthLoginSample.Service
 
             if (!hasLowerChar.IsMatch(input))
             {
-                UnityEngine.Debug.Log("Пароль должен содержать хотя бы одну строчную букву, Ошибка");
+                _notifyPageView.ShowMessage("Error", "The password must contain at least one lowercase letter", _errorColor);
                 return false;
             }
             else if (!hasUpperChar.IsMatch(input))
             {
-                UnityEngine.Debug.Log("Пароль должен содержать хотя бы одну заглавную букву, Ошибка");
+                _notifyPageView.ShowMessage("Error", "The password must contain at least one capital letter", _errorColor);
                 return false;
             }
             else if (!hasMiniMaxChars.IsMatch(input))
             {
-                UnityEngine.Debug.Log("Пароль должен быть длиннее 6 символов, Ошибка");
+                _notifyPageView.ShowMessage("Error", "Password must be longer than 6 characters", _errorColor);
                 return false;
             }
             else if (!hasNumber.IsMatch(input))
             {
-                UnityEngine.Debug.Log("Пароль должен содержать хотя бы одно числовое значение, Ошибка");
+                _notifyPageView.ShowMessage("Error", "The password must contain at least one numeric value", _errorColor);
                 return false;
             }
 
             else if (!hasSymbols.IsMatch(input))
             {
-                UnityEngine.Debug.Log("Пароль должен содержать хотя бы один спец. символ, Ошибка");
+                _notifyPageView.ShowMessage("Error", "The password must contain at least one special password symbol", _errorColor);
                 return false;
             }
             else
@@ -64,8 +69,8 @@ namespace AuthLoginSample.Service
             
             if (string.IsNullOrWhiteSpace(input))
             {
-                
-                UnityEngine.Debug.Log("Поле с email пустое, Ошибка");
+
+                _notifyPageView.ShowMessage("Error", "The email field is empty", _errorColor);
                 return false;
             }
 
@@ -73,7 +78,7 @@ namespace AuthLoginSample.Service
 
             if (!emailRegex.IsMatch(input))
             {
-                UnityEngine.Debug.Log("Некорректный формат email, Ошибка");
+                _notifyPageView.ShowMessage("Error", "Incorrect email format", _errorColor);
                 return false;
             }
 

@@ -1,11 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using Assets.Scenes.Samples.AuthLoginRefactored.Scripts.MVCS.View;
-using AuthLoginSample.Model;
-using AuthLoginSample.View;
 
-namespace AuthLoginSample.Controler{
+namespace AuthLoginSample
+{
     public class PageRoutingController 
     {
         private readonly PageRoutingModel pageRoutingModel; // страница Дженерик
@@ -32,32 +29,32 @@ namespace AuthLoginSample.Controler{
 
         public void Initialize()
         {
-            pageRoutingModel.CurrentPage.OnValueChanged += OnPageChanged; // подписка на смену страницы
+            pageRoutingModel.CurrentPageValue.OnValueChanged += OnPageChanged; // подписка на смену страницы
             loginPageView.OnRegisterClicked += OnRegisterClicked; // подписка на нажатие кнопки регистрации
             registrationPageView.OnBackButtonClicked += OnBackClicked; // подписка на нажатие кнопки обратно
         }
 
         ~PageRoutingController()
         {
-            pageRoutingModel.CurrentPage.OnValueChanged -= OnPageChanged; // подписка на смену страницы
+            pageRoutingModel.CurrentPageValue.OnValueChanged -= OnPageChanged; // подписка на смену страницы
             loginPageView.OnRegisterClicked -= OnRegisterClicked; // подписка на нажатие кнопки регистрации
             registrationPageView.OnBackButtonClicked -= OnBackClicked; // подписка на нажатие кнопки обратно
         }
 
         private void OnBackClicked()
         {
-            pageRoutingModel.CurrentPage.Value = CurrentPage.Login; // клацнули назад, перешли на страницу логинизации
+            pageRoutingModel.CurrentPageValue.Value = CurrentPage.Login; // клацнули назад, перешли на страницу логинизации
         }
 
         private void OnRegisterClicked()
         {
-            pageRoutingModel.CurrentPage.Value = CurrentPage.Registration; // клацнули на кнопку регистрации
+            pageRoutingModel.CurrentPageValue.Value = CurrentPage.Registration; // клацнули на кнопку регистрации
         }
 
         public void ChangePage(CurrentPage currentPage)
         {
             UnityEngine.Debug.Log("Change page invoked");
-             pageRoutingModel.CurrentPage.Value = currentPage;
+             pageRoutingModel.CurrentPageValue.Value = currentPage;
         }
 
         private void OnPageChanged(CurrentPage page1, CurrentPage page2) // метод который сменяет страницы
