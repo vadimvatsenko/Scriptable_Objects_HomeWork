@@ -84,5 +84,17 @@ namespace AuthLoginSample
 
             return true;
         }
+
+        public bool PasswordEquals(string password, string confirmPassword)
+        {
+            if(password != confirmPassword)
+            {
+                _notifyPageView.ShowMessage("Error", "passwords don't match", Color.red);
+                return false;
+            } else
+            {
+                return true;
+            }
+        }
     }
 }

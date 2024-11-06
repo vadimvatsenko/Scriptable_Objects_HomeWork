@@ -12,19 +12,31 @@ namespace AuthLoginSample
         public FirebaseAuth _auth { get; private set; }
         public FirebaseUser _user { get; private set; }
 
+        private Color SuccessColor => Color.green;
+        private Color FailureColor => Color.red;
+
         private NotifyPageView _notifyPageView;
+        private ValidationService _validationService;
 
         public event Action OnLoginSuccess;
         public event Action OnRegistSuccess;
-        public event Action OnAutoLoginSuccess;
+        public event Action<FirebaseUser> OnStateChanged;
+        public event Action OnAutoLogin;
 
-        public FireBaseService(NotifyPageView notifyPageView)
+        public FireBaseService(NotifyPageView notifyPageView, ValidationService validationService)
         {
             _auth = FirebaseAuth.DefaultInstance;
-            //_auth.StateChanged += AuthStateChanged;
-            //_user = _auth.CurrentUser; 
             _notifyPageView = notifyPageView;
+            _validationService = validationService;            
         }
+
+        public void Initialize()
+        {
+            _auth.StateChanged += AuthStateChanged;
+            _user = _auth.CurrentUser;
+            AuthStateChanged(this, null);
+        }
+
 
         ~FireBaseService()
         {
@@ -32,53 +44,59 @@ namespace AuthLoginSample
             _auth = null;
         }
 
-        public async void RegisterNewUser(string email, string password) 
+        public async void RegisterNewUser(string email, string password, string confirmPassword) 
         {
-            Task<AuthResult> task = _auth.CreateUserWithEmailAndPasswordAsync(email, password);
-            
-            await task;
-
-            try
+           
+            if(_validationService.EmailValidation(email) && _validationService.PassWordValidation(password) && _validationService.PasswordEquals(password, confirmPassword))
             {
-                if (task.IsCanceled)
-                {
-                    _notifyPageView.ShowMessage("Error", "CreateUserWithEmailAndPasswordAsync was canceled.", Color.red);
-                    return;
-                }
-                if (task.IsFaulted)
-                {
-                    _notifyPageView.ShowMessage("Error", "CreateUserWithEmailAndPasswordAsync encountered an error: " + task.Exception, Color.red);
-                    return;
-                }
+                Task<AuthResult> task = _auth.CreateUserWithEmailAndPasswordAsync(email, password);
 
-                Firebase.Auth.AuthResult result = task.Result;
+                await task;
 
-                _notifyPageView.ShowMessage("Success", result.User.DisplayName + " " + result.User.UserId + " " + "regist success", Color.green);
-                OnRegistSuccess?.Invoke();
+                try
+                {
+                    if (task.IsCanceled)
+                    {
+                        _notifyPageView.ShowMessage("Error", "CreateUserWithEmailAndPasswordAsync was canceled.", FailureColor);
+                        return;
+                    }
+                    if (task.IsFaulted)
+                    {
+                        _notifyPageView.ShowMessage("Error", "CreateUserWithEmailAndPasswordAsync encountered an error: " + task.Exception, FailureColor);
+                        return;
+                    }
+
+                    Firebase.Auth.AuthResult result = task.Result;
+
+                    _notifyPageView.ShowMessage("Success", result.User.DisplayName + " " + result.User.UserId + " " + "regist success", Color.green);
+                    OnRegistSuccess?.Invoke();
+                }
+                catch (FirebaseException ex)
+                {
+                    _notifyPageView.ShowMessage("Error", ex.Message, FailureColor);
+                }
             }
-            catch (FirebaseException ex)
+            else
             {
-                _notifyPageView.ShowMessage("Error", ex.Message, Color.red);
-            }
-            
+                return;
+            }            
         }
 
         public async void LoginInSystem(string email, string password) 
         {
-            Task<AuthResult> task = _auth.SignInWithEmailAndPasswordAsync(email, password);
-            await task;
-
             try
             {
+                Task<AuthResult> task = _auth.SignInWithEmailAndPasswordAsync(email, password);
+                await task;
                 if (task.IsCanceled)
                 {
-                    _notifyPageView.ShowMessage("Error", "SignInWithEmailAndPasswordAsync was canceled.", Color.red);
+                    _notifyPageView.ShowMessage("Error", "SignInWithEmailAndPasswordAsync was canceled.", FailureColor);
                     return;
                 }
 
                 if (task.IsFaulted)
                 {
-                    _notifyPageView.ShowMessage("Error", "SignInWithEmailAndPasswordAsync encountered an error: " + task.Exception, Color.red);
+                    _notifyPageView.ShowMessage("Error", "SignInWithEmailAndPasswordAsync encountered an error: " + task.Exception, FailureColor);
                     return;
                 }
 
@@ -89,7 +107,7 @@ namespace AuthLoginSample
             }
             catch (FirebaseException ex)
             {
-                _notifyPageView.ShowMessage("Error", ex.Message, Color.red);
+                _notifyPageView.ShowMessage("Error", ex.Message, FailureColor);
             }                
         }
 
@@ -109,7 +127,8 @@ namespace AuthLoginSample
                 {
                     //_notifyPageView.ShowMessage("Success", _user.UserId + "Enter Success", Color.green);
                     Debug.Log("Signed in " + _user.UserId);
-                    OnAutoLoginSuccess?.Invoke();
+                    OnAutoLogin?.Invoke();
+                    OnStateChanged?.Invoke(_user);
                 }
             }
         }

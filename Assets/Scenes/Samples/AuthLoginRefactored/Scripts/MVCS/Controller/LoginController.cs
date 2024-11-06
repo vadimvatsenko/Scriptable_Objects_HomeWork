@@ -17,6 +17,7 @@
         {
             loginPageView.OnLoginClicked += OnLoginClick;
             fireBaseService.OnLoginSuccess += Service_OnLoginSuccess;
+            fireBaseService.OnAutoLogin += Service_OnLoginSuccess;
         }
 
         private void Service_OnLoginSuccess()

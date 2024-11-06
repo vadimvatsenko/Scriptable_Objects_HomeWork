@@ -6,6 +6,7 @@ namespace AuthLoginSample
     public class PageRoutingController 
     {
         private readonly PageRoutingModel pageRoutingModel; // страница ƒженерик
+
         private readonly LoginPageView loginPageView; // страница логинизации
         private readonly RegistrationPageView registrationPageView; // страница регистрации
         private readonly ProfilePageView profilePageView; // страница профил€

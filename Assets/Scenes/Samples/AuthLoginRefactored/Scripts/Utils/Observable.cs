@@ -8,6 +8,7 @@ namespace AuthLoginSample
         
         public event Action<T, T> OnValueChanged; // дженериковое событие, принимает два дженериковых значения
 
+
         public Observable(T initialValue) // конструктор, принимает дженериковое значение
         {
             _value = initialValue; 

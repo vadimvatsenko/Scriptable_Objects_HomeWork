@@ -9,11 +9,13 @@ namespace AuthLoginSample
 {
         [SerializeField] private TextMeshProUGUI loginText; // поле почты регистрации
         [SerializeField] private TextMeshProUGUI passwordText; // поле пароля
+        [SerializeField] private TextMeshProUGUI confirmPasswordText;
 
         [SerializeField] private Button backButton; // кнопка обратно
         [SerializeField] private Button registrationButton; // кнопка регистрации
         public string Login => loginText.text; // свойство, возвращаем поле почты
         public string Password => passwordText.text; // свойство, возвращаем значение пароля
+        public string ConfirmPassword => confirmPasswordText.text;
 
         public event Action OnBackButtonClicked; // событие кнопки обратно
         public event Action OnRegistrationButtonClicked; // событие кнопки регистрации 
